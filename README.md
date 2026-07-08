@@ -1,4 +1,4 @@
-# GroupFile module for Powershell
+# GroupFiles module for Powershell
 
 
 <div align=center>
