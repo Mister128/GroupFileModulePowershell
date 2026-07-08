@@ -1,7 +1,0 @@
-{
-    ".png/.jpeg": "pictures",
-    ".html": "html",
-    ".css": "css",
-    ".js": "js",
-    ".mp3/.ogg": "musics"
-}

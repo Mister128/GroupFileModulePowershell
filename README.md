@@ -1,133 +1,155 @@
-# GroupFiles Module for PowerShell
+# GroupFile module for Powershell
 
-A PowerShell module that organizes files into directories based on their extensions using configurable rules.
 
-## Description
+<div align=center>
 
-The GroupFiles module helps you organize your files by automatically moving them into appropriate directories based on their file extensions. It uses JSON configuration files to define which extensions belong to which directories, allowing for flexible and customizable file organization.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![PowerShell 5.1+](https://img.shields.io/badge/PowerShell-5.1%2B-blue)](https://github.com/PowerShell/PowerShell)
+[![PowerShell Gallery](https://img.shields.io/powershellgallery/v/GroupFiles.svg)](https://www.powershellgallery.com/packages/GroupFiles)
+[![PowerShell Gallery](https://img.shields.io/powershellgallery/dt/GroupFiles.svg)](https://www.powershellgallery.com/packages/GroupFiles)
 
-## Features
 
-- **Automatic file sorting**: Moves files into directories based on their extensions
-- **Flexible configuration**: Define custom extension-to-directory mappings via JSON files
-- **Directory creation**: Optionally create target directories if they don't exist
-- **Selective processing**: Process only specific file extensions using the `-Only` parameter
-- **Safe operation**: Prevents overwriting existing files by default (use `-Force` to override)
-- **Customizable paths**: Specify which directory to process (defaults to current directory)
+**PowerShell module for automatic file organization based on extension rules.**
+
+[Installation](#installation) • [Quick Start](#quick-start) • [Documentation](#available-commands) • [Configuration](#configuration)
+
+</div>
+
+---
+
+## About
+
+**GroupFile** is a PowerShell module that automatically organizes your files into directories based on customizable extension rules. Define once how you want your files sorted, and let the module handle the rest.
+
+Perfect for developers, designers, photographers, and anyone dealing with large amounts of files that need systematic organization.
+
+## Table of Contents
+
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Available Commands](#available-commands)
+- [Configuration](#configuration)
+- [Testing](#testing)
+- [Requirements](#requirements)
+- [License](#license)
 
 ## Installation
 
-1. Clone or download this repository
-2. Place the `GroupFiles` folder in your PowerShell modules directory:
-   - Personal: `C:\Users\[YourUsername]\Documents\PowerShell\Modules\`
-   - System-wide: `$PSHOME\Modules\`
-3. Import the module in PowerShell:
-   ```powershell
-   Import-Module GroupFiles
-   ```
+### From PowerShell Gallery (recommended)
 
-## Usage
-
-### Basic Usage
 ```powershell
-# Sort all files in the current directory based on configuration
-Group-Files
-
-# Sort files in a specific directory
-Group-Files -Path "C:\MyFolder"
+Install-Module GroupFiles -Scope CurrentUser
 ```
 
-### Advanced Options
+### Manual installation
 ```powershell
-# Create directories if they don't exist and overwrite existing files
-Group-Files -Force
+# Clone the repository
+git clone https://github.com/yourusername/GroupFiles.git
 
-# Process only specific file extensions
-Group-Files -Only ".html", ".css", ".js"
+# Copy to your modules folder
+Copy-Item -Path .\GroupFiles\GroupFiles -Destination "$env:USERPROFILE\Documents\WindowsPowerShell\Modules\GroupFiles" -Recurse
 
-# Process specific extensions with directory creation
-Group-Files -Only ".png", ".jpg" -Force
-
-# Open the configuration directory to edit JSON files
-Group-Files -Config
+# Import the module
+Import-Module GroupFiles
 ```
 
-### Parameters
+## Quick Start
+```powershell
+# Organize files in current directory
+Group-File
+# NOTE: On first run, the module creates a default config and opens it for editing.
+# Run the command again to actually organize your files.
 
-- **`-Path`**: Specifies the directory to process (default: current directory)
-- **`-Only`**: Process only files with specified extensions (e.g., `".html", ".css"`)
-- **`-Force`**: Create target directories if they don't exist and overwrite existing files
-- **`-Config`**: Opens the configuration directory containing JSON files
+# Organize files in specific directory
+Group-File -Path C:\Downloads
+
+# Create missing directories and overwrite existing files
+Group-File -Path C:\Downloads -Force
+
+# Process only specific file types
+Group-File -Only ".jpg", ".png"
+
+# Open configuration file for editing
+Group-File -OpenConfig
+```
+
+## Available Commands
+
+### `Group File`
+
+Groups files into directories based on extension rules defined in configuration.
+
+#### Parameters
+| Parameter     | Description                                                       |
+| ------------- | ----------------------------------------------------------------- |
+| `-Path`       | Target directory to process. Defaults to current directory.       |
+| `-Only`       | Processes only rules containing specified extensions (array).     |
+| `-Force`      | Creates missing target directories and overwrites existing files. |
+| `-OpenConfig` | Opens the configuration directory for editing.                    |
 
 ## Configuration
 
-The module uses two JSON configuration files located in the Public directory:
+Configuration is stored in:
+- Windows: `%APPDATA%\GroupFile\GroupFile.config.json`
+- Linux\MacOS: `~/.config/GroupFile/GroupFile.config.json`
 
-### ConfSearchDirectories.json
-Defines which extensions map to which existing directory names:
+### Configuration Structure
+
 ```json
 {
-    "SearchDirectories": {
-        ".png/.jpeg": [
-            "picture",
-            "photo",
-            "photos",
-            "pic",
-            "pics",
-            "image",
-            "images"
-        ],
-        ".html": [
-            "html"
-        ],
-        ".css": [
-            "css",
-            "style",
-            "styles"
-        ]
-    }
+  "Rules": [
+    {
+        "Extensions": [".png", ".jpeg", ".jpg"],
+        "AllowedDirectories": ["picture", "pictures", "images"],
+        "DefaultDirectory": "images"
+    },
+    {
+        "Extensions": [".css"],
+        "AllowedDirectories": ["css", "styles"],
+        "DefaultDirectory": "styles"
+    },
+    {
+        "Extensions": [".js"],
+        "AllowedDirectories": ["js", "scripts"],
+        "DefaultDirectory": "scripts"
+    },
+    {
+        "Extensions": [".html"],
+        "AllowedDirectories": ["html", "pages"],
+        "DefaultDirectory": "pages"
+    },
+  ]
 }
 ```
 
-### ConfCreateDirectories.json
-Defines what to name newly created directories for each extension group:
-```json
-{
-    ".png/.jpeg": "pictures",
-    ".html": "html",
-    ".css": "css",
-    ".js": "js",
-    ".mp3/.ogg": "musics"
-}
-```
+### Configuration Fields
 
-## Examples
-
-```powershell
-# Sort all files in current directory with verbose output
-Group-Files -Verbose
-
-# Sort only HTML and CSS files
-Group-Files -Only ".html", ".css"
-
-# Sort files, create directories if needed, and overwrite existing files
-Group-Files -Force
-
-# Sort only JavaScript files in a specific directory
-Group-Files -Path "C:\Project" -Only ".js" -Force
-```
+| Field                | Description                                                                  |
+| -------------------- | ---------------------------------------------------------------------------- |
+| `Extensions`         | Array of file extensions to match (case-insensitive)                         |
+| `AllowedDirectories` | Array of directory names to search for (first existing is used)              |
+| `DefaultDirectory`   | Directory to create if none of allowed directories exist (requires `-Force`) |
 
 ## Testing
 
-The module includes Pester tests in the `Test` directory. To run the tests:
-```powershell
-# Install Pester if not already installed
-Install-Module -Name Pester -Force
+The module is covered by Pester 5 tests (16 tests).
 
-# Run tests
-Invoke-Pester -Path ".\Test\Test.ps1"
+```powershell
+# Install Pester 5 (if needed)
+Install-Module Pester -Force -SkipPublisherCheck -Scope CurrentUser
+
+# Run all tests
+Invoke-Pester -Path .\Tests\
+
+# Run tests with detailed output
+Invoke-Pester -Path .\Tests\ -Output Detailed
 ```
+
+## Requirements
+- PowerShell 6.0+ (Windows PowerShell or PowerShell Core 7+)
+- Windows 10/11, Windows Server 2016+, Linux, or macOS
+- Pester 5+ (for running tests)
 
 ## License
 
-This project is open source and available under the MIT License.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
