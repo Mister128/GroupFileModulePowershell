@@ -4,7 +4,7 @@
 <div align=center>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![PowerShell 5.1+](https://img.shields.io/badge/PowerShell-5.1%2B-blue)](https://github.com/PowerShell/PowerShell)
+[![PowerShell 5.1+](https://img.shields.io/badge/PowerShell-6.0%2B-blue)](https://github.com/PowerShell/PowerShell)
 [![PowerShell Gallery](https://img.shields.io/powershellgallery/v/GroupFiles.svg)](https://www.powershellgallery.com/packages/GroupFiles)
 [![PowerShell Gallery](https://img.shields.io/powershellgallery/dt/GroupFiles.svg)](https://www.powershellgallery.com/packages/GroupFiles)
 [![CI](https://github.com/Mister128/GroupFileModulePowershell/actions/workflows/PesterTests.yml/badge.svg)](https://github.com/Mister128/GroupFileModulePowershell/actions)
