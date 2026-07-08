@@ -1,0 +1,36 @@
+name: Run Pester tests
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  tests:
+    runs-on: windows-latest
+    
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install Pester
+        shell: pwsh
+        run: |
+          Install-Module Pester -Force -SkipPublisherCheck -Scope CurrentUser
+      - name: Run Pester Tests
+        shell: pwsh
+        run: |
+          $config = New-PesterConfiguration
+          $config.Run.Path = './Tests'
+          $config.TestResult.Enabled = $true
+          $config.TestResult.OutputFormat = 'NUnitXml'
+          $config.TestResult.OutputPath = 'test-results.xml'
+          Invoke-Pester -Configuration $config
+      
+      - name: Upload Results
+        uses: actions/upload-artifact@v5
+        if: always()
+        with:
+          name: test-results-${{ github.run_id }}
+          path: test-results.xml
