@@ -1,5 +1,5 @@
 BeforeAll {
-    $modulePath = Join-Path $PSScriptRoot "../GroupFile.psd1"
+    $modulePath = Join-Path $PSScriptRoot "../GroupFiles.psd1"
     Import-Module $modulePath -Force
 }
 
