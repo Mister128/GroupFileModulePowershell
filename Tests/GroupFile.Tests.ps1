@@ -1,5 +1,5 @@
 BeforeAll {
-    $modulePath = Join-Path $PSScriptRoot "../GroupFile.psd1"
+    $modulePath = Join-Path $PSScriptRoot "../GroupFiles.psd1"
     Import-Module $modulePath -Force
 }
 
@@ -37,7 +37,7 @@ Describe "Group-File" {
             )
         }
 
-        Mock -ModuleName GroupFile Get-GroupFileConfig {
+        Mock -ModuleName GroupFiles Get-GroupFileConfig {
             return $script:testConfig | ConvertTo-Json -Depth 5 | ConvertFrom-Json
         }
     }
